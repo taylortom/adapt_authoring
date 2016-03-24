@@ -1,0 +1,5 @@
+{
+  "name": "Sandbox Reset",
+  "description": "Clears out any content added by other users.<br/><b>WARNING: VERY destructive operation</b>",
+  "interval": "0-59 * * * * *"
+}

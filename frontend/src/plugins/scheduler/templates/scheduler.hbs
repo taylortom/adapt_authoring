@@ -1,0 +1,57 @@
+<div class="inner">
+  <div class="description">
+    <p>Scheduler automates the running of tasks on the system at specific intervals. The following scripts are installed on the system, and can be activated here.</p>
+  </div>
+  {{#if enabledTasks}}
+    <div class="tb-row tb-title">
+      <h2>Enabled tasks</h2>
+    </div>
+    <div class="plugin">
+      <div class="inner tb-row tb-heading col-row">
+        <div class="col-20">Task name</div>
+        <div class="col-30">Description</div>
+        <div class="col-20">Enabled by</div>
+        <div class="col-10">Interval</div>
+        <div class="col-10"></div>
+      </div>
+      {{#each enabledTasks}}
+        <div class="tb-row col-row">
+          <div class="col-20">{{{name}}}</div>
+          <div class="col-30">{{{description}}}</div>
+          <div class="col-20">{{{enabledBy}}}</div>
+          <div class="col-10">{{{interval}}}</div>
+          <div class="col-20 col-centered">
+            <button class="btn disable btn-alert" data-id="{{_id}}">Disable</button>
+          </div>
+        </div>
+      {{/each}}
+    </div>
+  {{/if}}
+  <div class="tb-row tb-title">
+    <h2>Available tasks</h2>
+  </div>
+  <div class="plugin">
+    <div class="inner tb-row tb-heading col-row">
+      <div class="col-20">Task name</div>
+      <div class="col-50">Description</div>
+      <div class="col-10">Interval</div>
+      <div class="col-10"></div>
+    </div>
+    {{#if disabledTasks}}
+      {{#each disabledTasks}}
+        <div class="tb-row col-row">
+          <div class="col-20">{{{name}}}</div>
+          <div class="col-50">{{{description}}}</div>
+          <div class="col-10">{{{interval}}}</div>
+          <div class="col-20 col-centered">
+            <button class="btn enable btn-info" data-id="{{_id}}">Enable</button>
+          </div>
+        </div>
+      {{/each}}
+    {{else}}
+      <div class="tb-row col-row">
+        There are no tasks to enable!
+      </div>
+    {{/if}}
+  </div>
+</div>
