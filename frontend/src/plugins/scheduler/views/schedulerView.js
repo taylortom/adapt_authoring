@@ -22,12 +22,11 @@ define(function(require){
 
     enableTask: function(event) {
       event && event.preventDefault();
-      $.ajax('api/scheduler/enable/' + $(event.currentTarget).attr('data-id'), { method: 'PUT' })
+      var taskId = $(event.currentTarget).attr('data-id');
+      $.ajax('api/scheduler/enable/' + taskId, { method: 'PUT' })
         .done(function(data, textStatus, jqXHR) {
-          // TODO add to this.model.enabledTasks
-          // TODO remove from this.model.disabledTasks
+          Origin.trigger('scheduler:tasksUpdated', data);
           Origin.router.navigate('#/scheduler', {trigger: true});
-          alert('great success');
         })
         .fail(function(jqXHR, textStatus, errorThrown) {
           Origin.Notify.alert({
@@ -41,10 +40,8 @@ define(function(require){
       event && event.preventDefault();
       $.ajax('api/scheduler/disable/' + $(event.currentTarget).attr('data-id'), { method: 'PUT' })
         .done(function(data, textStatus, jqXHR) {
-          // TODO remove from this.model.enabledTasks
-          // TODO add to this.model.disabledTasks
+          Origin.trigger('scheduler:tasksUpdated', data);
           Origin.router.navigate('#/scheduler', {trigger: true});
-          alert('great success');
         })
         .fail(function(jqXHR, textStatus, errorThrown) {
           Origin.Notify.alert({

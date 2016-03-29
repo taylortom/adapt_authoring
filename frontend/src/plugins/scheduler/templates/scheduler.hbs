@@ -10,7 +10,7 @@
       <div class="inner tb-row tb-heading col-row">
         <div class="col-20">Task name</div>
         <div class="col-30">Description</div>
-        <div class="col-20">Enabled by</div>
+        <div class="col-20">Started by</div>
         <div class="col-10">Interval</div>
         <div class="col-10"></div>
       </div>
@@ -27,17 +27,17 @@
       {{/each}}
     </div>
   {{/if}}
-  <div class="tb-row tb-title">
-    <h2>Available tasks</h2>
-  </div>
-  <div class="plugin">
-    <div class="inner tb-row tb-heading col-row">
-      <div class="col-20">Task name</div>
-      <div class="col-50">Description</div>
-      <div class="col-10">Interval</div>
-      <div class="col-10"></div>
+  {{#if disabledTasks}}
+    <div class="tb-row tb-title">
+      <h2>Available tasks</h2>
     </div>
-    {{#if disabledTasks}}
+    <div class="plugin">
+      <div class="inner tb-row tb-heading col-row">
+        <div class="col-20">Task name</div>
+        <div class="col-50">Description</div>
+        <div class="col-10">Interval</div>
+        <div class="col-10"></div>
+      </div>
       {{#each disabledTasks}}
         <div class="tb-row col-row">
           <div class="col-20">{{{name}}}</div>
@@ -48,10 +48,6 @@
           </div>
         </div>
       {{/each}}
-    {{else}}
-      <div class="tb-row col-row">
-        There are no tasks to enable!
-      </div>
-    {{/if}}
-  </div>
+    </div>
+  {{/if}}
 </div>

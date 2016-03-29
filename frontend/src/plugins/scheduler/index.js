@@ -7,7 +7,10 @@ define(function(require) {
 
   var featurePermissions = ["*/*:create","*/*:read","*/*:update","*/*:delete"];
   var isReady = false;
-  var enabledPlugins, disabledPlugins;
+  var tasksModel = new Backbone.Model({
+    enabledTasks: [],
+    disabledTasks: []
+  });
 
   Origin.on('app:dataReady login:changed', function() {
   	if (Origin.permissions.hasPermissions(featurePermissions)) {
@@ -40,15 +43,13 @@ define(function(require) {
     else Origin.on('scheduler:dataReady', route);
   });
 
+  Origin.on('scheduler:tasksUpdated', storeTasks);
+
   function preloadData() {
     Origin.trigger('scheduler:dataReady');
     $.ajax('api/scheduler/tasks')
       .done(function(data, textStatus, jqXHR) {
-        // sort
-        var split = _.partition(data, function(item) { return (item.enabled === true); });
-        enabledPlugins = split[0];
-        disabledPlugins = split[1];
-
+        storeTasks(data);
         isReady = true;
         Origin.trigger('scheduler:dataReady');
       })
@@ -60,13 +61,16 @@ define(function(require) {
       });
   };
 
-  function route() {
-    Origin.router.createView(SchedulerView, {
-      model:new Backbone.Model({
-        enabledTasks: enabledPlugins,
-        disabledTasks: disabledPlugins
-      })
+  function storeTasks(taskData) {
+    var split = _.partition(taskData, function(item) { return (item.enabled === true); });
+    tasksModel.set({
+      enabledTasks: split[0],
+      disabledTasks: split[1]
     });
+  };
+
+  function route() {
+    Origin.router.createView(SchedulerView, { model: tasksModel });
     Origin.sidebar.addView(new SchedulerSidebarView().$el, {
         "backButtonText": "Back to dashboard",
         "backButtonRoute": "/#/dashboard"

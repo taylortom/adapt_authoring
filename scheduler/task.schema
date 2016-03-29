@@ -15,9 +15,18 @@
       "type": "string",
       "required": true
     },
+    "main": {
+      "type": "string",
+      "required": true
+    },
+    "dir": {
+      "type": "string",
+      "required": true
+    },
     "enabled": {
       "type": "boolean",
-      "default": false
+      "default": false,
+      "required": true
     },
     "enabledBy": {
       "type": "string"

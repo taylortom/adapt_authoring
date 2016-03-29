@@ -1,6 +1,6 @@
 // LICENCE https://github.com/adaptlearning/adapt_authoring/blob/master/LICENSE
-var database = require('lib/database');
-var origin = require('lib/application')();
+var database = require('../../lib/database');
+var origin = require('../../lib/application')();
 
 // TODO do this another way
 var tenantId = '565f3042dca12e4b3702e578';
@@ -41,4 +41,4 @@ exports = module.exports = function() {
 			  console.log('done:', error);
 		  });
 	}, tenantId);
-}
+};
