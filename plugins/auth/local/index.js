@@ -27,7 +27,7 @@ var ERROR_CODES = {
   ACCOUNT_INACTIVE: 5
 };
 
-var MAX_LOGIN_ATTEMPTS = 3;
+var MAX_LOGIN_ATTEMPTS = 7;
 
 function LocalAuth() {
   this.strategy = new LocalStrategy({ usernameField: 'email' }, this.verifyUser);
