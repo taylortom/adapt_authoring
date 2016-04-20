@@ -1,19 +1,51 @@
 var app = require('./lib/application')();
+var async = require('async');
 var exec = require('child_process').exec;
 var fs = require('fs-extra');
+var glob = require('glob');
+var semver = require('semver');
 
 var config = require('./conf/config.json');
+
+var AUTO_RETRIES = 5;
 
 app.run({
   skipVersionCheck: true,
   skipStartLog: true
 });
 
-app.on('serverStarted', function () {
-  getLatestGitVersion('temp/' + config.masterTenantID + '/adapt_framework', function(error, version) {
-    console.log(error, version);
+app.on('serverStarted', upgrade);
+
+function upgrade() {
+  console.log('Starting upgrade');
+  var frameworkDir = 'temp/' + config.masterTenantID + '/adapt_framework';
+  getLatestGitVersion(frameworkDir, function(error, latestFrameworkVersion) {
+    if(error) return exitUpgrade(error);
+    console.log('Attempting to upgrade framework to', latestFrameworkVersion + '...');
+    var opts = {
+      cwd: frameworkDir,
+      stdio: [0, 'pipe', 'pipe']
+    };
+    var child = exec('git reset --hard ' + latestFrameworkVersion + ' && npm install', opts);
+    child.on('exit', function (error, stdout, stderr) {
+      if (error) return exitUpgrade(error);
+      console.log('  Successfully upgraded framework.');
+      console.log('Attempting to upgrade plugins...');
+      var child = exec('adapt install', opts);
+      child.on('exit', function (error, stdout, stderr) {
+        if (error) {
+          if(AUTO_RETRIES > 0) {
+            AUTO_RETRIES--;
+            console.log('Plugin upgrade failed. Reattempting...');
+            setTimeout(upgrade, 1000);
+          } return exitUpgrade(error);
+        }
+        console.log('  Successfully upgraded plugins.');
+        exitUpgrade();
+      });
+    });
   });
-});
+}
 
 function getLatestGitVersion(dir, callback) {
   var opts = {
@@ -35,14 +67,6 @@ function getLatestGitVersion(dir, callback) {
       var tagsArr = tags.split('\n');
       callback(null, tagsArr[tagsArr.length-2]);
     });
-  });
-}
-
-function installGitTag(dir, tag, callback) {
-  var child = exec('git reset --hard ' + latestFramework + ' && npm install', opts);
-  child.stdout.on('data', console.log);
-  child.on('exit', function (error, stdout, stderr) {
-    if (error) return exitUpgrade(error);
   });
 }
 
