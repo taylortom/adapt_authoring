@@ -7,6 +7,7 @@ var semver = require('semver');
 
 var config = require('./conf/config.json');
 
+var FRAMEWORK_DIR = 'temp/' + config.masterTenantID + '/adapt_framework';
 var AUTO_RETRIES = 5;
 
 app.run({
@@ -14,34 +15,61 @@ app.run({
   skipStartLog: true
 });
 
-app.on('serverStarted', upgrade);
+app.on('serverStarted', init);
 
-function upgrade() {
+function init() {
+  cleanPlugins(function(error) {
+    if(error) return exitUpgrade(error);
+    upgrade(exitUpgrade);
+  });
+}
+
+function cleanPlugins(cb) {
+  console.log('Cleaning plugin directories...');
+  var pluginDirs = [
+    'components',
+    'extensions',
+    'theme',
+    'menu'
+  ];
+  async.each(pluginDirs, function(dir, done) {
+    fs.remove(FRAMEWORK_DIR + '/src/' + dir, done);
+  }, function(error) {
+    if(error) return cb(error);
+    console.log('  Plugin directories cleaned.');
+    cb();
+  });
+}
+
+function upgrade(cb) {
   console.log('Starting upgrade');
-  var frameworkDir = 'temp/' + config.masterTenantID + '/adapt_framework';
-  getLatestGitVersion(frameworkDir, function(error, latestFrameworkVersion) {
+  getLatestGitVersion(FRAMEWORK_DIR, function(error, latestFrameworkVersion) {
     if(error) return exitUpgrade(error);
     console.log('Attempting to upgrade framework to', latestFrameworkVersion + '...');
     var opts = {
-      cwd: frameworkDir,
+      cwd: FRAMEWORK_DIR,
       stdio: [0, 'pipe', 'pipe']
     };
     var child = exec('git reset --hard ' + latestFrameworkVersion + ' && npm install', opts);
     child.on('exit', function (error, stdout, stderr) {
       if (error) return exitUpgrade(error);
-      console.log('  Successfully upgraded framework.');
-      console.log('Attempting to upgrade plugins...');
-      var child = exec('adapt install', opts);
-      child.on('exit', function (error, stdout, stderr) {
-        if (error) {
-          if(AUTO_RETRIES > 0) {
-            AUTO_RETRIES--;
-            console.log('Plugin upgrade failed. Reattempting...');
-            setTimeout(upgrade, 1000);
-          } return exitUpgrade(error);
-        }
-        console.log('  Successfully upgraded plugins.');
-        exitUpgrade();
+      fs.remove(FRAMEWORK_DIR + '/src/course', function(error) {
+        console.log('  Successfully upgraded framework.');
+        console.log('Attempting to upgrade plugins...');
+        var child = exec('adapt install', opts);
+        child.on('exit', function (error, stdout, stderr) {
+          if (error) {
+            if(AUTO_RETRIES > 0) {
+              AUTO_RETRIES--;
+              console.log('Plugin upgrade failed. Reattempting...');
+              setTimeout(init, 1000);
+            } else {
+              return exitUpgrade(error);
+            }
+          }
+          console.log('  Successfully upgraded plugins.');
+          cb();
+        });
       });
     });
   });
