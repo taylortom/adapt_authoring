@@ -3,28 +3,30 @@
  * Extension content plugin
  *
  */
+var _ = require('underscore');
+var async = require('async');
+var bower = require('bower');
+var fs = require('fs');
+var mkdirp = require('mkdirp');
+var ncp = require('ncp').ncp;
+var path = require('path');
+var rimraf = require('rimraf');
+var util = require('util');
 
-var origin = require('../../../'),
-    contentmanager = require('../../../lib/contentmanager'),
-    usermanager = require('../../../lib/usermanager'),
-    rest = require('../../../lib/rest'),
-    BowerPlugin = require('../bower'),
-    ContentPlugin = contentmanager.ContentPlugin,
-    ContentTypeError = contentmanager.errors.ContentTypeError,
-    configuration = require('../../../lib/configuration'),
-    database = require('../../../lib/database'),
-    helpers = require('../../../lib/helpers'),
-    logger = require('../../../lib/logger'),
-    defaultOptions = require('./defaults.json'),
-    bower = require('bower'),
-    rimraf = require('rimraf'),
-    async = require('async'),
-    fs = require('fs'),
-    ncp = require('ncp').ncp,
-    mkdirp = require('mkdirp'),
-    _ = require('underscore'),
-    util = require('util'),
-    path = require('path');
+var BowerPlugin = require('../bower');
+var database = require('../../../lib/database');
+var configuration = require('../../../lib/configuration');
+var contentmanager = require('../../../lib/contentmanager');
+var helpers = require('../../../lib/helpers');
+var logger = require('../../../lib/logger');
+var origin = require('../../../');
+var rest = require('../../../lib/rest');
+var usermanager = require('../../../lib/usermanager');
+
+var ContentPlugin = contentmanager.ContentPlugin;
+var ContentTypeError = contentmanager.errors.ContentTypeError;
+
+var defaultOptions = require('./defaults.json');
 
 var bowerConfig = {
   type: 'extensiontype',
@@ -57,14 +59,12 @@ var bowerConfig = {
                 enabledExtensions[key].version = newPlugin.version;
               }
             });
-
             // run the update
             db.update('config', { _id: doc._id }, { _enabledExtensions: enabledExtensions }, nextItem);
           }, function (err) {
             if (err) {
               logger.log('error', 'Failed to update old documents: ' + err.message, err);
             }
-
             return next(null);
           });
       });
@@ -200,7 +200,7 @@ function contentCreationHook (contentType, data, cb) {
               // The component has globals.
               database.getDatabase(function(error, tenantDb) {
                 // Add the globals to the course.
-                tenantDb.retrieve('course', {_id: contentData._courseId}, function(err, results) {
+                tenantDb.retrieve('course', { _id: contentData._courseId }, function(err, results) {
                   if (err) {
                     return callback(err);
                   }
@@ -228,12 +228,9 @@ function contentCreationHook (contentType, data, cb) {
 
                     courseGlobals._components[key] = componentGlobals;
 
-                    tenantDb.update('course', {_id: contentData._courseId}, {_globals: courseGlobals}, function(err, doc) {
-                      if (err) {
-                        return callback(err);
-                      } else {
-                        return callback(null);
-                      }
+                    tenantDb.update('course', { _id: contentData._courseId }, { _globals: courseGlobals }, function(err, doc) {
+                      // TODO just pass the callback function here?
+                      return callback(err);
                     });
                   } else {
                     return callback(null);
@@ -383,7 +380,7 @@ function toggleExtensions (courseId, action, extensions, cb) {
           }
 
           if (extensionItem.globals) {
-            tenantDb.retrieve('course', {_id: courseId}, function (err, results) {
+            tenantDb.retrieve('course', { _id: courseId }, function (err, results) {
               if (err) {
                 return cb(err);
               }
@@ -420,7 +417,7 @@ function toggleExtensions (courseId, action, extensions, cb) {
                 }
               }
 
-              tenantDb.update('course', {_id: courseId}, {_globals: courseGlobals}, function(err, doc) {
+              tenantDb.update('course', { _id: courseId }, { _globals: courseGlobals }, function(err, doc) {
                 if (!err) {
                   async.eachSeries(Object.keys(locations), function (key, nextLocation) {
                     updateComponentItems(tenantDb, key, locations[key].properties, extensionItem, nextLocation);

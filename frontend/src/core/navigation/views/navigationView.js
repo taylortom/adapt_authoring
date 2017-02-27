@@ -35,7 +35,7 @@ define(function(require){
       $.ajax({
         method: 'post',
         url: '/api/loginas',
-        data: {email: _revertLogin.email},
+        data: { email: _revertLogin.email },
         success: function (jqXHR, textStatus, errorThrown) {
           sessionModel.set('_canRevert', false);
           sessionModel.set('id', jqXHR.id);

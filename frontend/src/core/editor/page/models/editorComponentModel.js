@@ -8,7 +8,7 @@ define(function(require) {
     _siblings:'components',
     _children: false,
     // These are the only attributes which should be permitted on a save
-    // TODO seems hacky
+    // TODO look into this...
     whitelistAttributes: [
       '_id',
       '_componentType',

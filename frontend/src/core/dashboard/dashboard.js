@@ -54,7 +54,7 @@ define(function(require) {
 
       tagsCollection.fetch({
         success: function() {
-          Origin.sidebar.addView(new DashboardSidebarView({collection:tagsCollection}).$el);
+          Origin.sidebar.addView(new DashboardSidebarView({ collection: tagsCollection }).$el);
           var dashboardType = location || 'all';
           Origin.trigger('dashboard:loaded', { type: dashboardType });
         },
@@ -85,7 +85,7 @@ define(function(require) {
   Origin.on('app:dataReady login:changed', function() {
     Origin.globalMenu.addItem({
       "location": "global",
-      "text": "Dashboard",
+      "text": window.polyglot.t('app.dashboard'),
       "icon": "fa-home",
       "callbackEvent": "dashboard:open",
       "sortOrder": 1

@@ -73,7 +73,9 @@ define(function(require){
   });
 
   $(document).on('keyup', function(event) {
-    if ($(event.target).is('input, textarea')) return;
+    if ($(event.target).is('input, textarea')) {
+      return;
+    }
     Origin.trigger('key:up', event);
   });
 

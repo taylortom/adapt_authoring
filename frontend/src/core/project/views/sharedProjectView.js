@@ -25,26 +25,25 @@ define(function(require){
       this.model.set('heroImageURI', this.model.getHeroImageURI());
     },
 
-    openContextMenu: function (e) {
+    openContextMenu: function(e) {
       e && e.stopPropagation() && e.preventDefault();
-
       Origin.trigger('contextMenu:open', this, e);
     },
 
-    selectProject: function(event) {
-      event && event.preventDefault();
+    selectProject: function(e) {
+      e && e.preventDefault();
       this.selectItem();
     },
 
     selectItem: function() {
       Origin.trigger('dashboard:projectView:itemSelected');
       this.$el.addClass('selected');
-      this.model.set({_isSelected:true});
+      this.model.set({ _isSelected:true });
     },
 
     deselectItem: function() {
       this.$el.removeClass('selected');
-      this.model.set({_isSelected:false});
+      this.model.set({ _isSelected:false });
     },
 
     preview: function() {
@@ -56,7 +55,6 @@ define(function(require){
 
     promptDuplicateProject: function() {
       var self = this;
-
       Origin.Notify.confirm({
         text: window.polyglot.t('app.confirmduplicate'),
         callback: function(confirmed) {

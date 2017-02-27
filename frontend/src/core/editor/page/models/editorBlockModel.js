@@ -11,7 +11,7 @@ define(function(require) {
     layoutOptions:  null,
     dragLayoutOptions: null,
     // These are the only attributes which should be permitted on a save
-    // TODO seems hacky
+    // TODO look into this...
     whitelistAttributes: [
       '_id',
       '_courseId',
