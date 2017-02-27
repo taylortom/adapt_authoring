@@ -34,11 +34,11 @@ define(function(require) {
 
       // sort into appropriate collection
       availableExtensionsCollection.each(function(extension) {
-          if (_.indexOf(enabledExtensionNames, extension.get('name')) > -1) {
-              enabledExtensionsCollection.add(extension);
-          } else if(extension.get('_isAvailableInEditor')) {
-              disabledExtensionsCollection.add(extension);
-          }
+        if (_.indexOf(enabledExtensionNames, extension.get('name')) > -1) {
+          enabledExtensionsCollection.add(extension);
+        } else if(extension.get('_isAvailableInEditor')) {
+          disabledExtensionsCollection.add(extension);
+        }
       });
 
       // Set collections on model render for render
@@ -73,9 +73,7 @@ define(function(require) {
       configModel.fetch({
         success: _.bind(function(model, response, options) {
           Origin.editor.data.config =  model;
-          Origin.trigger('scaffold:updateSchemas', function() {
-            this.setupExtensions();
-          }, this);
+          Origin.trigger('scaffold:updateSchemas', this.setupExtensions, this);
         }, this)
       });
     },
@@ -122,11 +120,9 @@ define(function(require) {
         Origin.trigger('editorExtensionsEdit:views:remove');
       }
     }
-  },
-  {
+  },{
     template: 'editorExtensionsEdit'
   });
 
   return EditorExtensionsEditView;
-
 });
