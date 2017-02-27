@@ -68,7 +68,9 @@ define(function(require){
   });
 
   $(document).on('keydown', function(event) {
-    if ($(event.target).is('input, textarea')) return;
+    if ($(event.target).is('input, textarea')) {
+      return;
+    }
     Origin.trigger('key:down', event);
   });
 
