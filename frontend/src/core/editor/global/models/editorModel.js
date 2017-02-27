@@ -108,7 +108,6 @@ define(function(require) {
           serializedJson += child.serialize();
         });
       }
-    });
 
       return serializedJson;
     }
