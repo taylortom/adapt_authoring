@@ -2,17 +2,17 @@
 /**
  * offers passport-local style authentication
  */
+var fs = require('fs');
+var LocalStrategy = require('passport-local').Strategy;
+var passport = require('passport');
+var path = require('path');
+var util = require('util');
 
-var auth = require('../../../lib/auth'),
-    configuration = require('../../../lib/configuration'),
-    usermanager = require('../../../lib/usermanager'),
-    util = require('util'),
-    fs = require('fs'),
-    path = require('path'),
-    passport = require('passport'),
-    permissions = require('../../../lib/permissions'),
-    logger = require('../../../lib/logger'),
-    LocalStrategy = require('passport-local').Strategy;
+var auth = require('../../../lib/auth');
+var configuration = require('../../../lib/configuration');
+var logger = require('../../../lib/logger');
+var permissions = require('../../../lib/permissions');
+var usermanager = require('../../../lib/usermanager');
 
 var MESSAGES = {
   INVALID_USERNAME_OR_PASSWORD: 'Invalid username or password',

@@ -6,9 +6,9 @@ define(function(require) {
 
   var Router = Backbone.Router.extend({
     routes: {
-      "": "handleIndex",
-      "_=_": "handleIndex",
-      ":module(/*route1)(/*route2)(/*route3)(/*route4)": "handleRoute"
+      '': 'handleIndex',
+      '_=_': 'handleIndex',
+      ':module(/*route1)(/*route2)(/*route3)(/*route4)': 'handleRoute'
     },
 
     initialize: function() {
@@ -26,7 +26,7 @@ define(function(require) {
     },
 
     redirectToLogin: function() {
-      this.navigate('#/user/login', {trigger: true});
+      this.navigate('#/user/login', { trigger: true });
     },
 
     createView: function(View, viewOptions, settings) {
@@ -49,9 +49,9 @@ define(function(require) {
     handleIndex: function() {
       // Show loading on any route
       this.showLoading();
-      // console.log('in handleIndex');
+
       if (this.isUserAuthenticated()) {
-        this.navigate('#/dashboard', {trigger: true});
+        this.navigate('#/dashboard', { trigger: true });
       } else {
         return this.redirectToLogin();
       }
