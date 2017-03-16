@@ -15,9 +15,7 @@ define(function(require){
   _.extend(Origin, Backbone.Events);
 
   Origin.initialize = _.once(function() {
-    Origin.tap('initialize', function() {
-      initialize();
-    });
+    Origin.tap('initialize', initialize);
   });
 
   function initialize() {

@@ -73,9 +73,7 @@ define(function(require) {
       configModel.fetch({
         success: _.bind(function(model, response, options) {
           Origin.editor.data.config =  model;
-          Origin.trigger('scaffold:updateSchemas', function() {
-            this.setupExtensions();
-          }, this);
+          Origin.trigger('scaffold:updateSchemas', this.setupExtensions, this);
         }, this)
       });
     },
@@ -122,11 +120,9 @@ define(function(require) {
         Origin.trigger('editorExtensionsEdit:views:remove');
       }
     }
-  },
-  {
+  },{
     template: 'editorExtensionsEdit'
   });
 
   return EditorExtensionsEditView;
-
 });

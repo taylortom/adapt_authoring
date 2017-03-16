@@ -229,11 +229,8 @@ function contentCreationHook (contentType, data, cb) {
                     courseGlobals._components[key] = componentGlobals;
 
                     tenantDb.update('course', { _id: contentData._courseId }, { _globals: courseGlobals }, function(err, doc) {
-                      if (err) {
-                        return callback(err);
-                      } else {
-                        return callback(null);
-                      }
+                      // TODO just pass the callback function here?
+                      return callback(err);
                     });
                   } else {
                     return callback(null);

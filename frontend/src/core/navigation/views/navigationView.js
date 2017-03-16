@@ -8,7 +8,7 @@ define(function(require){
     className: 'navigation',
 
     initialize: function() {
-      this.listenTo(Origin, 'login:changed', this.loginChanged);
+      this.listenTo(Origin, 'user:updated', this.loginChanged);
       this.render();
     },
 
